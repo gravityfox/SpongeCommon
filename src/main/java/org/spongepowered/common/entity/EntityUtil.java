@@ -62,10 +62,8 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.Teleporter;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.WorldProviderEnd;
-import net.minecraft.world.WorldProviderHell;
 import net.minecraft.world.WorldServer;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockSnapshot;
@@ -96,8 +94,11 @@ import org.spongepowered.api.world.gamerule.DefaultGameRules;
 import org.spongepowered.api.world.storage.WorldProperties;
 import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.SpongeImplHooks;
-import org.spongepowered.common.event.tracking.*;
+import org.spongepowered.common.event.tracking.IPhaseState;
+import org.spongepowered.common.event.tracking.PhaseContext;
+import org.spongepowered.common.event.tracking.PhaseData;
 import org.spongepowered.common.event.tracking.PhaseTracker;
+import org.spongepowered.common.event.tracking.TrackingUtil;
 import org.spongepowered.common.event.tracking.context.ItemDropData;
 import org.spongepowered.common.event.tracking.phase.entity.EntityPhase;
 import org.spongepowered.common.event.tracking.phase.entity.TeleportingContext;
@@ -710,14 +711,7 @@ public final class EntityUtil {
                 targetSpawnVec = new Vector3d(bedSpawnLoc.getX() + 0.5D, bedSpawnLoc.getY() + 0.1D, bedSpawnLoc.getZ() + 0.5D);
             } else { // Bed invalid
                 playerIn.connection.sendPacket(new SPacketChangeGameState(0, 0.0F));
-                // Vanilla behaviour - Delete the known bed location if invalid
-                bedPos = null; // null = remove location
             }
-            // Set the new bed location for the new dimension
-            int prevDim = playerIn.dimension; // Temporarily for setSpawnPoint
-            playerIn.dimension = targetDimensionId;
-            playerIn.setSpawnPoint(bedPos, forceBedSpawn);
-            playerIn.dimension = prevDim;
         }
         return new Location<>((World) targetWorld, targetSpawnVec);
     }
